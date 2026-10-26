@@ -1,26 +1,238 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* The Bliss palette comes straight from the logo: red field, white letters.
+   Ink is an oxblood drawn from the red; blush is the one tone step for surfaces. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bliss: #d7262b;
+  --color-bliss-deep: #a8161c;
+  --color-wine: #4a0b10;
+  --color-ink: #2b0e10;
+  --color-ground: #ffffff;
+  --color-blush: #fbebe8;
+  --color-stone: #f4eeeb;
+  --color-gold: #b58a3e;
+  --color-muted: #6e4f4c;
+
+  --font-sans: var(--font-jost), system-ui, sans-serif;
+  --font-gurmukhi: var(--font-punjabi), var(--font-jost), sans-serif;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-silk: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --gutter: clamp(16px, 3.4vw, 48px);
+  /* Cusped arch from Amritsar's heritage architecture, used to frame imagery */
+  --arch: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 125' preserveAspectRatio='none'%3E%3Cpath d='M0 125L0 36Q-.9 27.7 6 23Q10.85 12.95 22 12.5Q33.75.35 50 5Q66.25.35 78 12.5Q89.15 12.95 94 23Q100.9 27.7 100 36L100 125Z'/%3E%3C/svg%3E");
+  color-scheme: light;
+  scrollbar-color: var(--color-bliss) var(--color-blush);
+  scrollbar-width: thin;
+}
+
+html {
+  background: var(--color-ground);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.55;
+  font-feature-settings: "kern", "liga";
+  caret-color: var(--color-bliss);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-bliss);
+  color: var(--color-ground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-bliss);
+  outline-offset: 3px;
+}
+
+a {
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+/* ---------- Primitives (in the components layer, so utilities can override them) ---------- */
+@layer components {
+
+.container-x {
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Display voice: Jost light, set large and tight, the way the logo's lettering is geometric */
+.display {
+  font-weight: 300;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.arch {
+  -webkit-mask-image: var(--arch);
+  mask-image: var(--arch);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  height: 52px;
+  padding: 0 1.65rem;
+  border-radius: 2px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  overflow: hidden;
+  isolation: isolate;
+  white-space: nowrap;
+  transition: color 0.45s var(--ease-expo), transform 0.2s var(--ease-expo);
+}
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateY(101%);
+  transition: transform 0.55s var(--ease-expo);
+}
+.btn:hover::before,
+.btn:focus-visible::before {
+  transform: translateY(0);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn-red {
+  background: var(--color-bliss);
+  color: var(--color-ground);
+}
+.btn-red::before {
+  background: var(--color-wine);
+}
+.btn-white {
+  background: var(--color-ground);
+  color: var(--color-bliss);
+}
+.btn-white::before {
+  background: var(--color-wine);
+}
+.btn-white:hover,
+.btn-white:focus-visible {
+  color: var(--color-ground);
+}
+
+/* Text action: a quiet underline that draws in */
+.link-u {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size 0.5s var(--ease-expo);
+}
+.link-u:hover,
+.link-u:focus-visible {
+  background-size: 100% 1px;
+}
+.link-on {
+  background-size: 100% 1px;
+}
+
+.line-mask {
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+input[type="range"] {
+  accent-color: var(--color-bliss);
+}
+}
+
+/* ---------- Cursor: a normal arrow and hand in Bliss red, white on red and dark grounds ---------- */
+:root {
+  --cur-arrow: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2732%27 height=%2732%27 viewBox=%270 0 32 32%27%3E%3Cpath d=%27M6 3.5v20.4l5.2-5 3.5 8.3 3.6-1.5-3.5-8.2h7.3z%27 fill=%27%23d7262b%27 stroke=%27%23ffffff%27 stroke-width=%271.6%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E") 6 4, auto;
+  --cur-hand: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2732%27 height=%2732%27 viewBox=%270 0 32 32%27%3E%3Cpath d=%27M10 4.5a2.25 2.25 0 0 1 4.5 0V12a2 2 0 0 1 4 .5 2 2 0 0 1 4 .6 2 2 0 0 1 3.5 1.2V20c0 4.5-3 8-8 8h-3c-2.6 0-4.2-1-5.6-2.6l-4.6-5.4a2 2 0 0 1 3-2.6L10 19.5z%27 fill=%27%23d7262b%27 stroke=%27%23ffffff%27 stroke-width=%271.6%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E") 12 2, pointer;
+  --cur-play: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2748%27 height=%2748%27 viewBox=%270 0 48 48%27%3E%3Ccircle cx=%2724%27 cy=%2724%27 r=%2721%27 fill=%27%23d7262b%27 stroke=%27%23ffffff%27 stroke-width=%271.5%27/%3E%3Cpath d=%27M20 16.5 32 24l-12 7.5z%27 fill=%27%23ffffff%27/%3E%3C/svg%3E") 24 24, pointer;
+  --cur-drag: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2748%27 height=%2748%27 viewBox=%270 0 48 48%27%3E%3Ccircle cx=%2724%27 cy=%2724%27 r=%2721%27 fill=%27%23d7262b%27 stroke=%27%23ffffff%27 stroke-width=%271.5%27/%3E%3Cpath d=%27M17 18l-6 6 6 6M31 18l6 6-6 6%27 fill=%27none%27 stroke=%27%23ffffff%27 stroke-width=%272.4%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E") 24 24, grab;
+  --cur-arrow-light: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2732%27 height=%2732%27 viewBox=%270 0 32 32%27%3E%3Cpath d=%27M6 3.5v20.4l5.2-5 3.5 8.3 3.6-1.5-3.5-8.2h7.3z%27 fill=%27%23ffffff%27 stroke=%27%234a0b10%27 stroke-width=%271.6%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E") 6 4, auto;
+  --cur-hand-light: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2732%27 height=%2732%27 viewBox=%270 0 32 32%27%3E%3Cpath d=%27M10 4.5a2.25 2.25 0 0 1 4.5 0V12a2 2 0 0 1 4 .5 2 2 0 0 1 4 .6 2 2 0 0 1 3.5 1.2V20c0 4.5-3 8-8 8h-3c-2.6 0-4.2-1-5.6-2.6l-4.6-5.4a2 2 0 0 1 3-2.6L10 19.5z%27 fill=%27%23ffffff%27 stroke=%27%234a0b10%27 stroke-width=%271.6%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E") 12 2, pointer;
+  --cur-play-light: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2748%27 height=%2748%27 viewBox=%270 0 48 48%27%3E%3Ccircle cx=%2724%27 cy=%2724%27 r=%2721%27 fill=%27%23ffffff%27 stroke=%27%23d7262b%27 stroke-width=%271.5%27/%3E%3Cpath d=%27M20 16.5 32 24l-12 7.5z%27 fill=%27%23d7262b%27/%3E%3C/svg%3E") 24 24, pointer;
+  --cur-drag-light: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2748%27 height=%2748%27 viewBox=%270 0 48 48%27%3E%3Ccircle cx=%2724%27 cy=%2724%27 r=%2721%27 fill=%27%23ffffff%27 stroke=%27%23d7262b%27 stroke-width=%271.5%27/%3E%3Cpath d=%27M17 18l-6 6 6 6M31 18l6 6-6 6%27 fill=%27none%27 stroke=%27%23d7262b%27 stroke-width=%272.4%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E") 24 24, grab;
+}
+@media (pointer: fine) {
+  html { cursor: var(--cur-arrow); }
+  :is(a, button, label, summary, select, [role="button"], input[type="range"]) { cursor: var(--cur-hand); }
+  [data-cursor="Drag"] { cursor: var(--cur-drag); }
+  [data-cursor="Play"] { cursor: var(--cur-play); }
+  [data-dark] { cursor: var(--cur-arrow-light); }
+  [data-dark] :is(a, button, label, summary, select, [role="button"], input[type="range"]) { cursor: var(--cur-hand-light); }
+  [data-dark] [data-cursor="Drag"] { cursor: var(--cur-drag-light); }
+  [data-dark] [data-cursor="Play"] { cursor: var(--cur-play-light); }
+  [data-dark] [data-light] { cursor: var(--cur-arrow); }
+  [data-dark] [data-light] :is(a, button, label, summary, select, [role="button"]) { cursor: var(--cur-hand); }
+  :is(input:not([type="range"]), textarea) { cursor: text; }
+}
+
+/* ---------- Loader (skipped before paint on repeat visits) ---------- */
+html[data-skip-loader="1"] #bliss-loader {
+  display: none;
+}
+html:not([data-loaded="1"]) body {
+  overflow: hidden;
+}
+/* While scripts and the 3D scene warm up, the logo breathes on the compositor alone */
+.loader-waiting [data-line] {
+  opacity: 0;
+}
+.loader-waiting .loader-logo {
+  animation: loader-breathe 1.6s ease-in-out infinite;
+}
+@keyframes loader-breathe {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  #bliss-loader {
+    display: none;
+  }
+  html:not([data-loaded="1"]) body {
+    overflow: auto;
+  }
 }
