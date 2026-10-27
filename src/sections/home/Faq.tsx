@@ -5,7 +5,7 @@ import { faqs } from "@/content/site";
 import { Plus } from "@/components/icons";
 
 export function Faq() {
-  const [open, setOpen] = useState(0);
+  const [open, setOpen] = useState(-1);
 
   return (
     <section aria-labelledby="faq-title" className="bg-ground py-[16vh]">

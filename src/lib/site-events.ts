@@ -29,8 +29,21 @@ export function registerAnchor(hash: string, position: () => number) {
 }
 export const anchorPosition = (hash: string) => anchors.get(hash)?.();
 
-// The 3D scene announces when its shaders are compiled, so the loader can play without jank.
+// The hero announces when its chooda is ready to show (3D shaders compiled, or the still
+// poster chosen instead), so the loader can play without jank. Pages without one never wait.
 export const SCENE_READY_EVENT = "bliss:scene-ready";
+export function markSceneReady() {
+  document.documentElement.dataset.scene = "ready";
+  window.dispatchEvent(new Event(SCENE_READY_EVENT));
+}
+export function onSceneReady(fn: () => void) {
+  if (document.documentElement.dataset.scene === "ready") {
+    fn();
+    return () => {};
+  }
+  window.addEventListener(SCENE_READY_EVENT, fn, { once: true });
+  return () => window.removeEventListener(SCENE_READY_EVENT, fn);
+}
 
 // The loader tells the hero when the curtain has lifted. The state lives on <html>
 // (set before paint on repeat visits), so it survives remounts and dev double-effects.

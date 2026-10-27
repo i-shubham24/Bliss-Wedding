@@ -6,7 +6,7 @@ import { Services } from "@/sections/home/Services";
 import { Reels } from "@/sections/home/Reels";
 import { Process } from "@/sections/home/Process";
 import { Destinations } from "@/sections/home/Destinations";
-import { Reviews } from "@/sections/home/Reviews";
+import { ReviewsSection } from "@/sections/home/ReviewsSection";
 import { PlanBuilder } from "@/sections/home/PlanBuilder";
 import { Faq } from "@/sections/home/Faq";
 import { Closing } from "@/sections/home/Closing";
@@ -22,7 +22,7 @@ export default function Home() {
       <Reels />
       <Process />
       <Destinations />
-      <Reviews />
+      <ReviewsSection />
       <PlanBuilder />
       <Faq />
       <Closing />

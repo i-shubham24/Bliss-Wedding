@@ -144,9 +144,16 @@ img {
 
 /* Text action: a quiet underline that draws in */
 .link-u {
+  position: relative;
   background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
   padding-bottom: 2px;
   transition: background-size 0.5s var(--ease-expo);
+}
+/* A finger-sized hit area around the text, without changing the layout */
+.link-u::after {
+  content: "";
+  position: absolute;
+  inset: -8px -4px;
 }
 .link-u:hover,
 .link-u:focus-visible {
@@ -197,6 +204,100 @@ input[type="range"] {
   [data-dark] [data-light] { cursor: var(--cur-arrow); }
   [data-dark] [data-light] :is(a, button, label, summary, select, [role="button"]) { cursor: var(--cur-hand); }
   :is(input:not([type="range"]), textarea) { cursor: text; }
+}
+
+/* ---------- Scroll reveals ----------
+   Anything marked data-rise rises into place as it scrolls into view. Pure CSS, driven by the
+   scroll position itself: no script touches the page, and it runs off the main thread.
+   Browsers without scroll-driven animations simply show the content. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-rise] {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 40px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* ---------- Overlays (open state set by usePresence as [data-open]) ---------- */
+/* Phone menu: a red circle opens from the menu button, then the links rise in turn */
+.mobile-menu {
+  clip-path: circle(0% at 92% 4%);
+  transition: clip-path 0.8s var(--ease-silk);
+}
+.mobile-menu[data-open] {
+  clip-path: circle(150% at 92% 4%);
+}
+.mobile-menu .menu-link {
+  opacity: 0;
+  translate: 0 40px;
+  transition: opacity 0.8s var(--ease-expo), translate 0.8s var(--ease-expo);
+}
+.mobile-menu[data-open] .menu-link {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: calc(0.25s + var(--i) * 0.06s);
+}
+/* Film player: the backdrop fades, the film rises into place */
+.reel-modal {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.reel-modal[data-open] {
+  opacity: 1;
+}
+.reel-modal .reel-card {
+  translate: 0 60px;
+  scale: 0.94;
+  transition: translate 0.6s var(--ease-expo), scale 0.6s var(--ease-expo);
+}
+.reel-modal[data-open] .reel-card {
+  translate: 0 0;
+  scale: 1;
+}
+/* A new review line arrives */
+.quote-in {
+  animation: quote-in 0.6s var(--ease-expo) both;
+}
+@keyframes quote-in {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+}
+
+/* ---------- Hero chooda poster ----------
+   Phones and tablets: centred in the square stage, exactly where the 3D stack is drawn
+   (82% of the stage, offsets from the poster capture). Desktop: placed by the hero script. */
+.chooda-poster {
+  --stack: calc(min(100vw - 32px, 416px) * 0.82);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--stack) * var(--pw));
+  translate: calc(-50% + var(--stack) * var(--px)) calc(-50% + var(--stack) * var(--py));
+}
+@media (min-width: 1024px) {
+  .chooda-poster {
+    left: 0;
+    top: 0;
+    translate: none;
+    visibility: hidden;
+  }
+  .chooda-poster[data-placed] {
+    visibility: visible;
+  }
 }
 
 /* ---------- Loader (skipped before paint on repeat visits) ---------- */

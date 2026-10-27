@@ -2,12 +2,12 @@
 
 import { useRef } from "react";
 import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
-import { getLenis, markReady, SCENE_READY_EVENT } from "@/lib/site-events";
+import { getLenis, markReady, onSceneReady } from "@/lib/site-events";
 import { site } from "@/content/site";
 
 // First visit only: the logo, the years counting up from 1935, then the red field
-// opens onto the hero. The sequence waits for the 3D scene to finish compiling (or a
-// three-second timeout on slow devices) so nothing heavy runs on the main thread while it plays.
+// opens onto the page. On the home page the sequence waits for the hero chooda to be ready
+// (or a three-second timeout on slow devices) so nothing heavy runs on the main thread while it plays.
 export function Loader() {
   const root = useRef<HTMLDivElement>(null);
 
@@ -62,14 +62,17 @@ export function Loader() {
       const start = () => {
         if (started) return;
         started = true;
-        window.removeEventListener(SCENE_READY_EVENT, start);
         play();
       };
-      window.addEventListener(SCENE_READY_EVENT, start, { once: true });
+      if (!document.querySelector("[data-stage]")) {
+        start();
+        return;
+      }
+      const off = onSceneReady(start);
       const fallback = window.setTimeout(start, 3000);
       return () => {
         window.clearTimeout(fallback);
-        window.removeEventListener(SCENE_READY_EVENT, start);
+        off();
       };
     },
     { scope: root },

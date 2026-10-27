@@ -9,6 +9,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { ReelModal } from "@/components/ReelModal";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
+import { SITE_URL } from "@/lib/site-url";
 
 const jost = Jost({ subsets: ["latin"], variable: "--font-jost", display: "swap" });
 const punjabi = Noto_Sans_Gurmukhi({
@@ -19,6 +20,8 @@ const punjabi = Noto_Sans_Gurmukhi({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "./" },
   title: {
     default: "The Bliss | Wedding Planners and Decorators in Amritsar",
     template: "%s | The Bliss",

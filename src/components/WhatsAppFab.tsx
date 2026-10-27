@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ScrollTrigger } from "@/lib/gsap";
 import { whatsappLink } from "@/lib/site-events";
 import { site } from "@/content/site";
@@ -8,17 +9,23 @@ import { WhatsApp } from "./icons";
 
 export function WhatsAppFab() {
   const [show, setShow] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    // Shown after the hero, hidden again once the closing section (with its own buttons) arrives
+    // Shown after the first screen, hidden again once the closing section (with its own
+    // buttons) arrives. Every page ends with that section, so it is set up again per page.
+    if (!document.querySelector("#contact")) return;
     const st = ScrollTrigger.create({
       start: () => window.innerHeight * 1.2,
       endTrigger: "#contact",
       end: "top bottom",
       onToggle: (self) => setShow(self.isActive),
     });
-    return () => st.kill();
-  }, []);
+    return () => {
+      st.kill();
+      setShow(false);
+    };
+  }, [pathname]);
 
   return (
     <a

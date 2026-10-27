@@ -1,11 +1,38 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
-import { anchorPosition, scrollToTarget, setLenis } from "@/lib/site-events";
+import { anchorPosition, getLenis, scrollToTarget, setLenis } from "@/lib/site-events";
 
 export function SmoothScroll() {
+  const pathname = usePathname();
+  const first = useRef(true);
+
+  // Arriving on a page: a link like "/#story" lands once the page's scroll scenes are
+  // measured (some anchors sit at the end of a pinned scene); otherwise a new page starts
+  // at the top. A reload keeps the browser's own scroll position.
+  useEffect(() => {
+    const hash = window.location.hash;
+    const initial = first.current;
+    first.current = false;
+    if (!hash || hash === "#top") {
+      if (!initial) getLenis()?.scrollTo(0, { immediate: true, force: true });
+      return;
+    }
+    const id = window.setTimeout(() => {
+      ScrollTrigger.refresh();
+      const target = anchorPosition(hash) ?? document.querySelector<HTMLElement>(hash);
+      if (target === null || target === undefined) return;
+      const lenis = getLenis();
+      if (lenis) lenis.scrollTo(target, { immediate: true, force: true });
+      else if (typeof target === "number") window.scrollTo(0, target);
+      else target.scrollIntoView();
+    }, 400);
+    return () => window.clearTimeout(id);
+  }, [pathname]);
+
   useEffect(() => {
     let lenis: Lenis | null = null;
     let tick: ((time: number) => void) | null = null;

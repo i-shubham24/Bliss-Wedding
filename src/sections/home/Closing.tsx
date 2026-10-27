@@ -1,11 +1,65 @@
 "use client";
 
-import { useRef } from "react";
+import { useId, useRef, useState } from "react";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { whatsappLink } from "@/lib/site-events";
-import { hero, site } from "@/content/site";
-import { ArrowUpRight, Phone, WhatsApp } from "@/components/icons";
-import { StudioStatus } from "@/components/StudioStatus";
+import { hero, ratings, site } from "@/content/site";
+import { ArrowUpRight, Phone, Star, WhatsApp } from "@/components/icons";
+
+const google = ratings.find((r) => r.source === "Google");
+const longDate = (iso: string) =>
+  new Date(`${iso}T12:00:00`).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+// "Is your date free?": the family picks a day and asks the studio on WhatsApp in one tap.
+// The studio's address, hours and email live in the footer card just below, so not here.
+function DateCheck() {
+  const id = useId();
+  const [date, setDate] = useState("");
+  const [missing, setMissing] = useState(false);
+
+  const ask = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!date) {
+      setMissing(true);
+      document.getElementById(`${id}-date`)?.focus();
+      return;
+    }
+    window.open(whatsappLink(site.whatsapp, `Hi The Bliss! Is ${longDate(date)} free for our wedding?`), "_blank", "noopener");
+  };
+
+  return (
+    <form onSubmit={ask} noValidate className="bg-ground/10 p-6 sm:p-7">
+      <label htmlFor={`${id}-date`} className="display block text-[clamp(26px,2.2vw,32px)]">
+        Is your date free?
+      </label>
+      <p className="mt-2 text-[16px]">Pick the day and ask us on WhatsApp.</p>
+      <div className="mt-5 flex flex-wrap gap-2">
+        <input
+          id={`${id}-date`}
+          type="date"
+          value={date}
+          onFocus={(e) => (e.currentTarget.min ||= new Date().toLocaleDateString("en-CA"))}
+          onChange={(e) => {
+            setDate(e.target.value);
+            setMissing(false);
+          }}
+          aria-invalid={missing}
+          aria-describedby={missing ? `${id}-err` : undefined}
+          className="h-12 min-w-0 flex-1 rounded-[2px] bg-ground px-4 text-[16px] text-ink outline-none focus-visible:outline-2 focus-visible:outline-ground"
+        />
+        <button type="submit" className="btn btn-white !h-12 !px-5">
+          <WhatsApp /> Ask
+        </button>
+      </div>
+      {missing && (
+        <p id={`${id}-err`} className="mt-3 text-[15px] font-medium">
+          Choose a date first.
+        </p>
+      )}
+      <p className="mt-4 text-[15px]">October to March weddings book four to six months ahead.</p>
+    </form>
+  );
+}
 
 // The one deliberate theme switch: the page ends inside the logo's red field.
 export function Closing() {
@@ -75,11 +129,11 @@ export function Closing() {
             <span lang="pa" className="font-gurmukhi">
               {hero.welcome}
             </span>
-            . Tell us your dates. We will take care of the rest.
+            . Send us your dates on WhatsApp, or call the studio.
           </p>
         </div>
 
-        {/* The two actions first, top right, with the visiting details a step below */}
+        {/* The two actions first, top right, with the date check a step below */}
         <div className="lg:col-span-4 lg:col-start-9">
           <div className="grid grid-cols-2 gap-3">
             <a
@@ -97,46 +151,14 @@ export function Closing() {
               <Phone /> Call us
             </a>
           </div>
-          <dl
-            data-visit
-            className="mt-14 grid gap-7 text-[17px] sm:grid-cols-2 lg:grid-cols-1"
-          >
-            <div>
-              <dt className="text-[15px] font-medium">The studio</dt>
-              <dd className="mt-1.5 leading-relaxed">
-                {site.address.line1}, Shastri Nagar
-                <br />
-                White Avenue, Amritsar
-              </dd>
-            </div>
-            <div>
-              <dt className="text-[15px] font-medium">Hours</dt>
-              <dd className="mt-1.5">
-                <StudioStatus />
-              </dd>
-            </div>
-            <div>
-              <dt className="text-[15px] font-medium">Write to us</dt>
-              <dd className="mt-1.5">
-                <a href={`mailto:${site.email}`} className="link-u break-all">
-                  {site.email}
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt className="sr-only">Directions</dt>
-              <dd>
-                <a
-                  href={site.address.maps}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="link-u inline-flex items-center gap-2 font-medium"
-                >
-                  Get directions <ArrowUpRight />
-                </a>
-              </dd>
-            </div>
-          </dl>
+          <div data-visit className="mt-10 grid gap-6">
+            <DateCheck />
+            {google?.href && (
+              <a href={google.href} target="_blank" rel="noreferrer" className="link-u inline-flex items-center gap-2 self-start text-[16px] font-medium">
+                <Star width={16} height={16} /> Rated {google.score} by {parseInt(google.count, 10)} families on Google <ArrowUpRight />
+              </a>
+            )}
+          </div>
         </div>
       </div>
 

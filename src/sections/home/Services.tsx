@@ -17,7 +17,7 @@ export function Services() {
               Everything under one roof
             </h2>
             <p className="mt-6 max-w-[36ch] text-[17px]">
-              Book the whole wedding or a single service. One team handles it all.
+              Book the whole wedding or a single service.
             </p>
             <a href="#plan" className="btn btn-red mt-10">
               Get an estimate

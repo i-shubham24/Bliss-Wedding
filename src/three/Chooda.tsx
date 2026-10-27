@@ -1,10 +1,9 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
-import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { SCENE_READY_EVENT } from "@/lib/site-events";
+import { CAMERA_Z, FOV, placement } from "./placement";
 
 // The signature object: a Punjabi bride's chooda. Red and ivory bangles with gold bands,
 // revolved from a rounded profile. Scroll progress (0 to 1) turns the stack to face the
@@ -45,7 +44,7 @@ const smooth = (a: number, b: number, v: number) => {
 };
 const { lerp, damp } = THREE.MathUtils;
 
-function bandGeometry(radius: number, width: number, depth: number) {
+function bandGeometry(radius: number, width: number, depth: number, segments: number) {
   const r = Math.min(width, depth) * 0.45;
   const inner = radius - depth / 2;
   const outer = radius + depth / 2;
@@ -62,12 +61,12 @@ function bandGeometry(radius: number, width: number, depth: number) {
   corner(inner + r, h - r, Math.PI / 2);
   corner(inner + r, -h + r, Math.PI);
   pts.push(pts[0].clone());
-  return new THREE.LatheGeometry(pts, 112);
+  return new THREE.LatheGeometry(pts, segments);
 }
 
-function Studs({ depth, material }: { depth: number; material: THREE.Material }) {
+function Studs({ depth, material, lite }: { depth: number; material: THREE.Material; lite: boolean }) {
   const ref = useRef<THREE.InstancedMesh>(null);
-  const geo = useMemo(() => new THREE.SphereGeometry(0.021, 10, 8), []);
+  const geo = useMemo(() => (lite ? new THREE.SphereGeometry(0.021, 8, 6) : new THREE.SphereGeometry(0.021, 10, 8)), [lite]);
   useLayoutEffect(() => {
     const m = new THREE.Matrix4();
     const radius = 1 + depth / 2 + 0.004;
@@ -77,41 +76,33 @@ function Studs({ depth, material }: { depth: number; material: THREE.Material })
       ref.current!.setMatrixAt(i, m);
     }
     ref.current!.instanceMatrix.needsUpdate = true;
-  }, [depth]);
+  }, [depth, geo]);
   return <instancedMesh ref={ref} args={[geo, material, STUDS]} />;
 }
 
-function Bangles({ progress }: { progress: RefObject<number> }) {
+const MATCAPS = ["red", "ivory", "gold", "pearl"].map((m) => `/chooda/matcap-${m}.webp`);
+
+// lite: fewer segments and a lower pixel ratio, for modest phones and laptops
+function Bangles({ progress, lite }: { progress: RefObject<number>; lite: boolean }) {
   const tilt = useRef<THREE.Group>(null);
   const spin = useRef<THREE.Group>(null);
   const bands = useRef<(THREE.Group | null)[]>([]);
   const { size } = useThree();
-  // Below 1024px the canvas is its own square stage under the copy, so the stack sits centred in it
-  const mobile = size.width < 1024;
 
-  const mats = useMemo(
-    () => ({
-      red: new THREE.MeshPhysicalMaterial({
-        color: "#c4141c",
-        roughness: 0.2,
-        clearcoat: 1,
-        clearcoatRoughness: 0.05,
-        side: THREE.DoubleSide,
-      }),
-      ivory: new THREE.MeshPhysicalMaterial({
-        color: "#f4e9d9",
-        roughness: 0.28,
-        clearcoat: 0.9,
-        clearcoatRoughness: 0.08,
-        side: THREE.DoubleSide,
-      }),
-      gold: new THREE.MeshStandardMaterial({ color: "#d9a957", metalness: 1, roughness: 0.18, side: THREE.DoubleSide }),
-      pearl: new THREE.MeshStandardMaterial({ color: "#fff8ef", roughness: 0.16, metalness: 0.1 }),
-    }),
-    [],
-  );
+  // Each material is a matcap: a sphere of that lacquer, gold or pearl rendered once under the
+  // studio lights and reflections (public/chooda/matcap-*.webp). It looks the same as the full
+  // lighting from this fixed camera, at a fraction of the cost: no reflection maps to build.
+  const caps = useLoader(THREE.TextureLoader, MATCAPS);
+  const mats = useMemo(() => {
+    const [red, ivory, gold, pearl] = caps.map((t) => {
+      t.colorSpace = THREE.SRGBColorSpace;
+      // the captures are already tone-mapped, so they are shown as they are
+      return new THREE.MeshMatcapMaterial({ matcap: t, side: THREE.DoubleSide, toneMapped: false });
+    });
+    return { red, ivory, gold, pearl };
+  }, [caps]);
 
-  const geos = useMemo(() => SET.map((b) => bandGeometry(1, b.width, b.depth)), []);
+  const geos = useMemo(() => SET.map((b) => bandGeometry(1, b.width, b.depth, lite ? 72 : 112)), [lite]);
 
   useFrame((state, dt) => {
     const p = progress.current ?? 0;
@@ -120,20 +111,7 @@ function Bangles({ progress }: { progress: RefObject<number> }) {
     const spread = smooth(0.08, 0.72, p);
     const fly = smooth(0.3, 1, p);
     const g = tilt.current!;
-
-    // Frame size at the starting camera distance: centre the stack in the right half,
-    // lifted so it only kisses the top of the BLISS wordmark
-    // Wide, short screens (laptops at 125% scaling) get a smaller stack so it clears the nav
-    // and sits over the wordmark rather than on it.
-    const aspect = size.width / size.height;
-    const frameH = 2 * 6.2 * Math.tan(THREE.MathUtils.degToRad(16));
-    const frameW = frameH * aspect;
-    // On small screens the canvas is the full screen around a square stage of up to 26rem
-    const stagePx = Math.min(size.width - 32, 416);
-    const baseScale = mobile ? (0.82 * stagePx * (frameH / size.height)) / 2.2 : Math.min(0.92, Math.max(0.6, 1.45 / aspect));
-    const centreFromTop = mobile ? 0.5 : 0.155 + 0.337 * baseScale;
-    const baseX = mobile ? 0 : frameW * 0.232;
-    const baseY = (0.5 - centreFromTop) * frameH;
+    const { mobile, baseScale, baseX, baseY } = placement(size.width, size.height);
     const loose = 1 - face;
 
     g.rotation.x = damp(g.rotation.x, lerp(1.06, Math.PI / 2, face) - state.pointer.y * 0.2 * loose, 5, dt);
@@ -146,7 +124,7 @@ function Bangles({ progress }: { progress: RefObject<number> }) {
     bands.current.forEach((band, i) => {
       if (band) band.position.y = OFFSETS[i] * (1 + spread * 6);
     });
-    state.camera.position.z = lerp(6.2, -4.5, fly);
+    state.camera.position.z = lerp(CAMERA_Z, -4.5, fly);
   });
 
   return (
@@ -161,7 +139,7 @@ function Bangles({ progress }: { progress: RefObject<number> }) {
             position-y={OFFSETS[i]}
           >
             <mesh geometry={geos[i]} material={mats[b.kind]} />
-            {b.studs && <Studs depth={b.depth} material={mats.pearl} />}
+            {b.studs && <Studs depth={b.depth} material={mats.pearl} lite={lite} />}
           </group>
         ))}
       </group>
@@ -169,86 +147,69 @@ function Bangles({ progress }: { progress: RefObject<number> }) {
   );
 }
 
-// Compile every shader once on mount, then tell the loader the heavy work is done
-function Warmup() {
-  const { gl, scene, camera } = useThree();
+// Every shader is compiled in the background before the first frame. KHR_parallel_shader_compile
+// lets the browser build them off the main thread, so the page never freezes.
+function Warmup({ onCompiled }: { onCompiled: () => void }) {
+  const { gl, camera, invalidate, get } = useThree();
   useEffect(() => {
-    gl.compile(scene, camera);
-    const id = requestAnimationFrame(() => window.dispatchEvent(new Event(SCENE_READY_EVENT)));
-    return () => cancelAnimationFrame(id);
-  }, [gl, scene, camera]);
+    let cancelled = false;
+    gl.compileAsync(get().scene, camera).then(() => {
+      if (cancelled) return;
+      onCompiled();
+      requestAnimationFrame(() => invalidate());
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [gl, camera, invalidate, get, onCompiled]);
   return null;
 }
 
-function hasWebGL() {
-  try {
-    const c = document.createElement("canvas");
-    return !!(c.getContext("webgl2") || c.getContext("webgl"));
-  } catch {
-    return false;
-  }
+// Calls back once, after the first real frame has been drawn
+function FirstFrame({ onLive }: { onLive: () => void }) {
+  const done = useRef(false);
+  useFrame(() => {
+    if (done.current) return;
+    done.current = true;
+    requestAnimationFrame(onLive);
+  });
+  return null;
 }
 
-// Flat stand-in for devices without WebGL: the same chooda, drawn.
-function FlatChooda() {
-  return (
-    <div className="absolute inset-0 grid place-items-center lg:justify-end lg:pr-[12vw]">
-      <svg viewBox="0 0 200 120" className="w-[64vw] max-w-[520px] -rotate-12" aria-hidden>
-        {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-          <ellipse
-            key={i}
-            cx="100"
-            cy={36 + i * 8}
-            rx="88"
-            ry="30"
-            fill="none"
-            stroke={i === 2 || i === 5 ? "#d9a957" : i === 3 ? "#f4e9d9" : "#c4141c"}
-            strokeWidth={i === 2 || i === 5 ? 3 : 7}
-          />
-        ))}
-      </svg>
-    </div>
-  );
-}
-
+// Only loaded on devices that can render it well (see ./capability); everyone else keeps the poster.
+// onLive fires once the first real frame is on screen, so the poster can fade out under it.
 export default function ChoodaCanvas({
   progress,
   active,
+  lite,
   eventSource,
+  onLive,
 }: {
   progress: RefObject<number>;
   active: boolean;
+  lite: boolean;
   eventSource: RefObject<HTMLElement | null>;
+  onLive: () => void;
 }) {
-  const [webgl] = useState(hasWebGL);
-  useEffect(() => {
-    if (!webgl) window.dispatchEvent(new Event(SCENE_READY_EVENT));
-  }, [webgl]);
-  if (!webgl) return <FlatChooda />;
-
+  const [compiled, setCompiled] = useState(false);
+  const onCompiled = useMemo(() => () => setCompiled(true), []);
   return (
     <Canvas
-      dpr={[1, 1.5]}
-      camera={{ position: [0, 0, 6.2], fov: 32, near: 0.05, far: 50 }}
+      dpr={lite ? [1, 1.25] : [1, 1.5]}
+      camera={{ position: [0, 0, CAMERA_Z], fov: FOV, near: 0.05, far: 50 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      frameloop={active ? "always" : "demand"}
+      frameloop={!compiled ? "never" : active ? "always" : "demand"}
       eventSource={eventSource as RefObject<HTMLElement>}
       eventPrefix="client"
       style={{ pointerEvents: "none" }}
       aria-hidden
-      onCreated={({ gl, scene }) => {
-        // Studio reflections from the room environment built into three: no HDR download, no extra library
-        const pmrem = new THREE.PMREMGenerator(gl);
-        scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-        scene.environmentIntensity = 0.85;
-        pmrem.dispose();
-      }}
     >
-      <ambientLight intensity={0.3} />
-      <directionalLight position={[3, 4, 5]} intensity={1.5} color="#fff1e6" />
-      <directionalLight position={[-4, -2, 2]} intensity={0.55} color="#ffb3a3" />
-      <Bangles progress={progress} />
-      <Warmup />
+      {/* The scene and its warm-up mount together, once the matcaps have loaded */}
+      <Suspense fallback={null}>
+        <Bangles progress={progress} lite={lite} />
+        <Warmup onCompiled={onCompiled} />
+      </Suspense>
+      {compiled && <FirstFrame onLive={onLive} />}
     </Canvas>
   );
 }

@@ -1,11 +1,18 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
-import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { openReel } from "@/lib/site-events";
 import { diary, stories, type Diary, type Story } from "@/content/site";
-import { ArrowUpRight, Play } from "@/components/icons";
+import { ArrowRight, ArrowUpRight, Play } from "@/components/icons";
+
+// Each signature wedding has its own case-study page
+const CASE_STUDY: Record<string, string> = {
+  "komal-lovish": "/weddings/komal-sharma-lovish-oberoi",
+  "amrita-gurpal": "/weddings/amrita-kaur-gurpal",
+};
 
 function StoryBlock({ story, flip }: { story: Story; flip: boolean }) {
   const [main, second, third] = story.images;
@@ -54,7 +61,7 @@ function StoryBlock({ story, flip }: { story: Story; flip: boolean }) {
             <p key={p.slice(0, 24)}>{p}</p>
           ))}
         </div>
-        <dl className="mt-8 grid max-w-[54ch] grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
+        <dl className="mt-8 flex max-w-[54ch] flex-wrap gap-x-12 gap-y-4">
           {story.facts.map((f) => (
             <div key={f.label}>
               <dt className="text-[14px] text-muted">{f.label}</dt>
@@ -67,6 +74,11 @@ function StoryBlock({ story, flip }: { story: Story; flip: boolean }) {
             <blockquote className="text-[17px] leading-relaxed">{story.words}</blockquote>
             <figcaption className="mt-2 text-[14px] text-muted">The Bliss, on Instagram</figcaption>
           </figure>
+        )}
+        {CASE_STUDY[story.slug] && (
+          <Link href={CASE_STUDY[story.slug]} className="link-u mt-8 inline-flex items-center gap-2 text-[16px] font-medium text-bliss">
+            Read the full story <ArrowRight />
+          </Link>
         )}
       </div>
     </article>
@@ -105,7 +117,7 @@ function DiaryTile({ item, i }: { item: Diary; i: number }) {
           src={item.img}
           alt=""
           fill
-          sizes="(min-width: 1024px) 40vw, 92vw"
+          sizes={`(min-width: 1024px) ${Math.round((Number(place.match(/lg:col-span-(\d+)/)?.[1] ?? 4) / 12) * 100)}vw, (min-width: 640px) 46vw, 92vw`}
           className="object-cover transition-transform duration-[1.6s] ease-[var(--ease-expo)] group-hover:scale-105"
         />
         <span aria-hidden className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
@@ -134,8 +146,12 @@ export function Signature() {
           .fromTo(s.querySelector("button"), { clipPath: "inset(14% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.4 }, 0)
           .from(s.querySelector("[data-story-second]"), { y: 80, autoAlpha: 0, duration: 1.4 }, 0.3);
       });
-      gsap.utils.toArray<HTMLElement>("[data-diary]").forEach((card) => {
-        gsap.from(card, { y: 60, autoAlpha: 0, duration: 1.2, scrollTrigger: { trigger: card, start: "top 92%" } });
+      // One watcher for all nine tiles: tiles that arrive together rise together
+      gsap.set("[data-diary]", { y: 60, autoAlpha: 0 });
+      ScrollTrigger.batch("[data-diary]", {
+        start: "top 92%",
+        once: true,
+        onEnter: (tiles) => gsap.to(tiles, { y: 0, autoAlpha: 1, duration: 1.2, stagger: 0.08 }),
       });
     },
     { scope: root },
@@ -149,7 +165,7 @@ export function Signature() {
             Weddings people still talk about
           </h2>
           <p className="max-w-[40ch] text-[17px] lg:col-span-4 lg:col-start-9">
-            Two weddings we are proud of, with their films, and more from our diary.
+            Two weddings we are proud of, and more from our diary.
           </p>
         </div>
 

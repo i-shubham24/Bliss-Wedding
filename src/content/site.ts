@@ -59,10 +59,10 @@ export const hero = {
 export const legacy = {
   title: "Since 1935, in Amritsar",
   statement:
-    "A 91-year-old family firm, rebranded as The Bliss by its fourth generation. We plan every wedding the way we would plan our own.",
+    "A family firm, renamed The Bliss by its fourth generation. We plan every wedding the way we would plan our own.",
   timeline: [
-    { when: "1935", text: "A family firm opens in Amritsar." },
-    { when: "Four generations", text: "The craft and the care, handed down." },
+    { when: "1935", text: "The family firm opens its doors." },
+    { when: "Four generations", text: "Handed down, parent to child." },
     { when: "Today", text: "Ginni Grover and Jaskirat Singh lead The Bliss, with a planning team and an in-house décor studio." },
   ],
   // Counters shown top right of the story. 600+ is the owner's own figure (WeddingBazaar); confirm before launch.
@@ -94,37 +94,28 @@ export const stories: Story[] = [
     couple: "Komal Sharma & Lovish Oberoi",
     headline: "The wedding of cricketer Abhishek Sharma's sister",
     when: "Amritsar, 3 October 2025",
-    story: [
-      "When Komal Sharma, sister of India opener Abhishek Sharma, married Lovish Oberoi in a traditional Sikh ceremony, the family trusted The Bliss with the planning and the décor.",
-      "Guests walked in through an entrance lined with sunflowers, and our team ran every function so the family could simply enjoy it.",
-    ],
-    facts: [
-      { label: "Ceremony", value: "Sikh wedding in Amritsar" },
-      { label: "What we did", value: "Planning and décor" },
-      { label: "Date", value: "3 October 2025" },
-    ],
+    story: ["Guests walked in through an entrance lined with sunflowers, and our team ran every function."],
+    facts: [{ label: "What we did", value: "Planning and décor" }],
     words: "Honoured to plan and design the wedding of cricketer Abhishek Sharma's sister. A Bliss signature wedding.",
     badge: "Cricketer Abhishek Sharma",
     images: [
       { src: insta("DSFzbemk84V"), alt: "Cricketer Abhishek Sharma in India colours, from The Bliss's post on his sister's wedding" },
       { src: reelCover("5FieC0YimGs"), alt: "The sunflower entrance The Bliss designed for Komal Sharma's wedding" },
-      { src: insta("DWJyqzGk-hh"), alt: "The family at Komal Sharma's wedding, from The Bliss's post" },
+      { src: insta("DWJyqzGk-hh"), alt: "A moment from Komal Sharma's wedding, from The Bliss's post" },
     ],
     film: { id: "5FieC0YimGs", title: "Komal Sharma's wedding, sister of Abhishek Sharma" },
   },
   {
     slug: "amrita-gurpal",
     couple: "Amrita Kaur & Gurpal",
-    headline: "Singer Amrita Kaur's wedding, the one everyone talked about",
+    headline: "Singer Amrita Kaur's wedding",
     when: "Punjab, 2026",
     story: [
-      "For singer Amrita Kaur and Gurpal, we handled the planning, the décor and the catering.",
       "Gold drapes and red roses framed the couple, with ਦਿਲਾਂ ਨੂੰ ਦਿਲਾਂ ਦੇ ਰਾਹ (hearts find their way to hearts) written into the day.",
     ],
     facts: [
       { label: "Ceremony", value: "Punjabi wedding" },
       { label: "What we did", value: "Planning, décor and catering" },
-      { label: "Look", value: "Gold drapes, red roses" },
     ],
     images: [
       { src: reelCover("mDM3ukOXPOY"), alt: "Red roses and gold drapes at Amrita and Gurpal's wedding" },
@@ -139,14 +130,14 @@ export type Diary = { title: string; line: string; img: string; reel?: string; l
 // More real celebrations, each from The Bliss's own posts and films
 export const diary: Diary[] = [
   { title: "Kirat's butterfly garden", line: "Bangle ceremony at voco Amritsar", img: insta("DeweB5cTWRG"), reel: "BhEG_akVTu0" },
-  { title: "The Leopard Club", line: "A wild, themed Mehndi at Maribella, Amritsar", img: insta("DehZ1UPEyiM"), link: "https://www.instagram.com/p/DehZ1UPEyiM/" },
-  { title: "Ali Brothers, live", line: "A Sufi night the family still sings about", img: reelCover("i3wfsnt37SM"), reel: "i3wfsnt37SM" },
-  { title: "Noor Zora", line: "A Jaggo night of Punjabi heritage", img: reelCover("5iZPWPjAnDs"), reel: "5iZPWPjAnDs" },
+  { title: "The Leopard Club", line: "A themed Mehndi at Maribella, Amritsar", img: insta("DehZ1UPEyiM"), link: "https://www.instagram.com/p/DehZ1UPEyiM/" },
+  { title: "Ali Brothers, live", line: "At one of our Sufi nights", img: reelCover("i3wfsnt37SM"), reel: "i3wfsnt37SM" },
+  { title: "Noor Zora", line: "A Jaggo night", img: reelCover("5iZPWPjAnDs"), reel: "5iZPWPjAnDs" },
   { title: "Akhand Path Sahib", line: "A beginning at home, under Waheguru ji's grace", img: insta("Dd86mrPE4Qj"), reel: "1x3N5LurFfc" },
   { title: "Shreenath ji mandap", line: "A Krishna-themed wedding mandap", img: reelCover("VGrbu6pD4I4"), reel: "VGrbu6pD4I4" },
   { title: "Home from New York", line: "An NRI family's wedding in Amritsar", img: reelCover("5EkS-MUSrno"), reel: "5EkS-MUSrno" },
   { title: "A Bridgerton bridal shower", line: "For the bestie, before she became a wifey", img: insta("DeRjOq6zL3O"), link: "https://www.instagram.com/p/DeRjOq6zL3O/" },
-  { title: "White and gold", line: "Candlelight, lamps and soft florals as the evening set in", img: insta("DdowF8sE0Rv"), link: "https://www.instagram.com/p/DdowF8sE0Rv/" },
+  { title: "White and gold", line: "Candlelight and soft florals as the evening set in", img: insta("DdowF8sE0Rv"), link: "https://www.instagram.com/p/DdowF8sE0Rv/" },
 ];
 
 export type Ceremony = {
@@ -172,7 +163,7 @@ export const ceremonies: Ceremony[] = [
     color: "#C2456A",
     deep: "#9E2F52",
     tint: "#F8E4E8",
-    copy: "The first yes. Shagun trays, a floral corner for the first family photo and food the elders will remember.",
+    copy: "Usually small, at home or over a family meal, with only the closest relatives.",
     bring: ["Shagun trays", "Intimate décor", "Family dining", "Photo corner"],
     img: reelCover("s5A1YW8UGww"),
     reel: { id: "s5A1YW8UGww", title: "What winning in life looks like" },
@@ -185,7 +176,7 @@ export const ceremonies: Ceremony[] = [
     color: "#EFA11B",
     deep: "#A86400",
     tint: "#FDF0D6",
-    copy: "Sunflower, marigold and lavender Haldis, like Trimeet and Nishtha's at Clubhouse Amritsar. Yellow everywhere, stress nowhere.",
+    copy: "Sunflower, marigold and lavender Haldis, like Trimeet and Nishtha's at Clubhouse Amritsar.",
     bring: ["Sunflower and marigold décor", "Haldi kits", "Swings and seating", "Dhol on cue"],
     img: reelCover("gTVCSkNGHnQ"),
     reel: { id: "gTVCSkNGHnQ", title: "Beauty of Haldi" },
@@ -198,7 +189,7 @@ export const ceremonies: Ceremony[] = [
     color: "#5E7B2F",
     deep: "#46601F",
     tint: "#E9EFDD",
-    copy: "From our Leopard Club Mehndi at Maribella to garden afternoons, with live mehndi artists and music for every aunty.",
+    copy: "From our Leopard Club Mehndi at Maribella to garden afternoons with music for every aunty.",
     bring: ["Themed décor", "Mehndi artists", "Lounge seating", "Live counters"],
     img: insta("DehZ1UPEyiM"),
     reel: { id: "fZAcB4YCMFo", title: "A Mehndi function by The Bliss" },
@@ -211,7 +202,7 @@ export const ceremonies: Ceremony[] = [
     color: "#C4621D",
     deep: "#9A4710",
     tint: "#F8E6D8",
-    copy: "Lamp-lit pots, folk songs and the whole family dancing through the night, like our Noor Zora Jaggo.",
+    copy: "Lamp-lit pots and the whole family dancing through the night, like our Noor Zora Jaggo.",
     bring: ["Heritage props", "Lantern lanes", "Folk performers", "Dhol and boliyan"],
     img: reelCover("5iZPWPjAnDs"),
     reel: { id: "5iZPWPjAnDs", title: "Noor Zora, a Jaggo night" },
@@ -224,7 +215,7 @@ export const ceremonies: Ceremony[] = [
     color: "#2D2F6A",
     deep: "#2D2F6A",
     tint: "#E3E3F1",
-    copy: "From the Ali Brothers live to a Sufi night at Clubhouse Gardens. Every sangeet starts with a moodboard and ends on the dance floor.",
+    copy: "From the Ali Brothers live to a Sufi night at Clubhouse Gardens.",
     bring: ["Stage and lighting", "Artists and DJ", "Choreography", "Sound"],
     img: reelCover("WuyRfpRnGi4"),
     reel: { id: "i3wfsnt37SM", title: "The Ali Brothers live at a Sufi night" },
@@ -237,7 +228,7 @@ export const ceremonies: Ceremony[] = [
     color: "#D7262B",
     deep: "#B51D22",
     tint: "#FBE2E1",
-    copy: "Kirat's bangle ceremony at voco Amritsar became a garden of butterflies. The chooda moment gets a set of its own.",
+    copy: "Kirat's bangle ceremony at voco Amritsar became a garden of butterflies.",
     bring: ["Bangle ceremony décor", "Bridal entry", "Ritual set-up", "Candid corners"],
     img: reelCover("BhEG_akVTu0"),
     reel: { id: "BhEG_akVTu0", title: "A fairytale garden lit by butterflies" },
@@ -250,7 +241,7 @@ export const ceremonies: Ceremony[] = [
     color: "#B8893E",
     deep: "#80601F",
     tint: "#F5EBD9",
-    copy: "Akhand Path at home, Anand Karaj set-ups from open grounds to Ranjit Vilas, and calm coordination with the Gurdwara.",
+    copy: "Set-ups from open grounds to Ranjit Vilas, planned calmly with your Gurdwara.",
     bring: ["Anand Karaj set-up", "Akhand Path arrangements", "Guest flow", "Langar coordination"],
     img: reelCover("tV72Lhqt37s"),
     reel: { id: "tV72Lhqt37s", title: "Our Anand Karaj set-up" },
@@ -263,7 +254,7 @@ export const ceremonies: Ceremony[] = [
     color: "#1F1414",
     deep: "#1F1414",
     tint: "#EDE6E2",
-    copy: "White and gold evenings, chandeliers, cocktail nights at 5 States Resort and a stage for the grand entry.",
+    copy: "White and gold evenings, chandeliers and cocktail nights at 5 States Resort.",
     bring: ["Stage and entry", "Bar and menus", "Lighting design", "DJ and band"],
     img: reelCover("DZPSa6oHG0g"),
     reel: { id: "DZPSa6oHG0g", title: "Luxury wedding décor by The Bliss" },
@@ -273,25 +264,25 @@ export const ceremonies: Ceremony[] = [
 export const services = [
   {
     title: "Wedding planning & on-site management",
-    line: "One team, one timeline, one phone number for every vendor.",
+    line: "One team and one phone number for every vendor.",
     points: ["Budgets and timelines", "Vendor sourcing and negotiation", "Event flow and run-sheets", "Help desk at every function"],
     img: reelCover("3T18KgE4Ntk"),
   },
   {
     title: "Décor & design",
-    line: "Our own décor studio builds stages, mandaps, entrances and full themes.",
+    line: "Designed and built in our own décor studio.",
     points: ["Concepts and moodboards", "Stage, mandap and Anand Karaj set-ups", "Fresh florals and lighting", "Themed décor"],
     img: reelCover("DZPSa6oHG0g"),
   },
   {
     title: "Catering & bar",
-    line: "Punjabi, Indian and continental menus with live counters.",
+    line: "Punjabi, Indian and continental menus.",
     points: ["Custom menus and tastings", "Live food stations", "Bar and mocktail counters", "Service staff"],
     img: photo(P.thali),
   },
   {
     title: "Music & entertainment",
-    line: "DJs, dhol, live singers, Sufi nights and sangeet choreography.",
+    line: "Live singers, DJs and dhol, booked and managed by us.",
     points: ["DJ and sound", "Artists and Sufi nights", "Sangeet choreography", "Baraat band and dhol"],
     img: reelCover("Ew7xP7DkwK8"),
   },
@@ -309,7 +300,7 @@ export const services = [
   },
   {
     title: "Invites, signage & keepsakes",
-    line: "Invitations, signage, wishing trees, trousseau packing and return gifts.",
+    line: "Including trousseau packing and return gifts.",
     points: ["Invitations and e-invites", "Signage and stationery", "Wishing trees", "Trousseau and gifting"],
     img: reelCover("T8PUriYODt8"),
   },
@@ -321,7 +312,7 @@ export const services = [
   },
   {
     title: "Bridal showers, parties & corporate",
-    line: "Bridal showers, bachelorettes, birthdays and corporate days.",
+    line: "Like our Bridgerton bridal shower.",
     points: ["Bridal showers and bachelorettes", "Birthdays and anniversaries", "Conferences", "Employee fun days"],
     img: insta("DeRjOq6zL3O"),
   },
@@ -364,23 +355,43 @@ export const steps = [
   },
   {
     title: "Moodboards & mock-ups",
-    text: "We design every function, from colours to lighting, and you approve it before a single flower is ordered.",
+    text: "You approve the design for each function before a single flower is ordered.",
   },
   {
     title: "One team, every vendor",
-    text: "Venues, caterers, DJs, photographers and transport. We manage them all, so you only deal with us.",
+    text: "We manage the venue, caterers, DJs, photographers and transport, so you only deal with us.",
   },
   {
     title: "You celebrate. We run the show.",
-    text: "Our crew runs every function, so your family gets to be guests at its own wedding.",
+    text: "Your family gets to be guests at its own wedding.",
   },
 ];
 
 export const ratings = [
-  { source: "Google", score: "4.8", count: "127 reviews" },
-  { source: "WedMeGood", score: "4.9", count: "19 reviews" },
-  { source: "WeddingWire", score: "5.0", count: "15 reviews" },
-  { source: "Justdial", score: "5.0", count: "124 ratings" },
+  {
+    source: "Google",
+    score: "4.8",
+    count: "127 reviews",
+    href: "https://www.google.com/maps/search/?api=1&query=THE+BLISS+Events+%26+Wedding+Planner&query_place_id=ChIJOWsBKqBkGTkRrfW7zQ8YoZc",
+  },
+  {
+    source: "WedMeGood",
+    score: "4.9",
+    count: "19 reviews",
+    href: "https://www.wedmegood.com/profile/THE-BLISS-Events-and-Wedding-Planner-758943/reviews",
+  },
+  {
+    source: "WeddingWire",
+    score: "5.0",
+    count: "15 reviews",
+    href: "https://www.weddingwire.in/wedding-planners/the-bliss-wedding-company--e451906/reviews",
+  },
+  {
+    source: "Justdial",
+    score: "5.0",
+    count: "124 ratings",
+    href: "https://www.justdial.com/Amritsar/The-Bliss-Opp-Adlakha-Hospital-White-Avenue/0183PX183-X183-200104154412-D9C7_BZDET",
+  },
 ];
 
 // Video testimonials from The Bliss's own channel
@@ -400,13 +411,13 @@ export const googleLines = [
 ];
 
 export const destinations = [
-  { place: "Amritsar", region: "Home, Punjab", img: photo(P.goldenTemple), text: "Our home city. We know every venue and every vendor." },
+  { place: "Amritsar", region: "Home, Punjab", img: photo(P.goldenTemple), text: "Our home city. We know every venue and vendor." },
   { place: "Jalandhar & Beas", region: "Punjab", img: reelCover("CbJxorbe4ZU"), text: "An easy drive from our studio, with our full crew on the ground." },
-  { place: "Chamba", region: "Himachal Pradesh", img: reelCover("9anuqXx53Mc"), text: "Mountain weddings, planned down to the last shuttle." },
-  { place: "Jammu", region: "Jammu & Kashmir", img: photo(P.lakeCouple), text: "Travel, stays and local permissions, all handled." },
-  { place: "Jaipur", region: "Rajasthan", img: photo(P.jalMahal), text: "Palaces and courtyards for the full royal welcome." },
+  { place: "Chamba", region: "Himachal Pradesh", img: reelCover("9anuqXx53Mc"), text: "Mountain weddings, with every shuttle planned." },
+  { place: "Jammu", region: "Jammu & Kashmir", img: photo(P.lakeCouple), text: "We handle travel, stays and local permissions." },
+  { place: "Jaipur", region: "Rajasthan", img: photo(P.jalMahal), text: "Palaces and courtyards for a royal welcome." },
   { place: "Goa", region: "The coast", img: photo(P.beachArch), text: "Sunset pheras by the sea, run by our Amritsar team." },
-  { place: "New York & beyond", region: "NRI families", img: reelCover("iTBusqAH6IE"), text: "Planning from abroad? We are your family's team in Punjab." },
+  { place: "New York & beyond", region: "NRI families", img: reelCover("iTBusqAH6IE"), text: "For families planning from abroad, we are your team in Punjab." },
 ];
 
 export const planOptions = {
@@ -430,14 +441,10 @@ export const faqs = [
   },
   {
     q: "Can you manage the Anand Karaj and Akhand Path arrangements?",
-    a: "Yes. We coordinate with the Gurdwara and handle the set-up, guests and hospitality with care.",
+    a: "Yes. We coordinate with the Gurdwara and handle the set-up, guests and hospitality.",
   },
   {
     q: "How early should we book?",
     a: "For October to February weddings, book four to six months ahead. Smaller functions can be done in a few weeks.",
-  },
-  {
-    q: "Where is your studio?",
-    a: "30, Race Course Road, Shastri Nagar, Amritsar. Open every day, 10 am to 7 pm.",
   },
 ];
